@@ -1,6 +1,6 @@
 # Guess-My-Drawing.io
 
-## Developers
+### Developers
 * Riaz Charania
 * Vilen Milner
 * Arnob Talukder

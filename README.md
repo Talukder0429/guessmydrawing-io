@@ -25,7 +25,7 @@
  * The turn player can draw with different sized brushes
  * The turn player can draw with different color brushes
  * The turn player can reset the drawing
- * Other
+ * Additional drawing features
 
 **Sharing the turn players drawing process**
 

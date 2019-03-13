@@ -1,0 +1,28 @@
+div.scoreBoard{
+    display: inline-block;
+    width: 160px;
+    border-radius: 15px;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #A1FFCE, #FAFFD1);
+    padding: 15px;
+    vertical-align: middle
+}
+
+div.arrowRight {
+    display: inline-block;
+    border: solid black;
+    border-width: 0 5px 5px 0;
+    width: 15px;
+    height: 15px;
+    transform: rotate(-45deg);
+}
+
+div.endOfRound{
+    display: inline-block;
+    width: 160px;
+    border-radius: 15px;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #A1FFCE, #FAFFD1);
+    padding: 15px;
+    vertical-align: middle
+}

@@ -1,12 +1,9 @@
+import './components/components.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import PC from './components/playerCard'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const title = <h1 class="title">GuessMyDrawing.io</h1>;
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ReactDOM.render(title, document.getElementById('root'));
+ReactDOM.render(<PC />, document.getElementById('order'));

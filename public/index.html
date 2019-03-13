@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link rel="stylesheet" type="text/css" href="index.css"/>
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta
@@ -27,6 +28,15 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <div class="grid-container">
+        <div class="time">time</div>
+        <div class="canvas">canvas</div>
+        <div class="chat">chat</div>
+        <div class="turnOrder" id="order">turnOrder</div>
+        <div class="guess">
+            <input type="text" maxlength="64" placeholder="What is your guess?" required>
+       </div>
+    </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

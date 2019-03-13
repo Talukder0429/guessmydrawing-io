@@ -13,8 +13,13 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: auto auto auto auto;
-  grid-template-areas: "time canvas canvas chat" "time canvas canvas chat" "guess guess guess guess" "turnOrder turnOrder turnOrder turnOrder";
+  grid-template-areas: "word word word word" "time canvas canvas chat" "time canvas canvas chat" "guess guess guess guess" "turnOrder turnOrder turnOrder turnOrder";
   gap: 10px;
+}
+
+.word {
+    grid-area: word;
+    border: solid black;
 }
 
 .time {

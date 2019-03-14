@@ -26,3 +26,11 @@ div.endOfRound{
     padding: 15px;
     vertical-align: middle
 }
+
+canvas{
+    border-bottom: solid black;
+}
+
+.drawingUtil{
+    margin: 5px;
+}

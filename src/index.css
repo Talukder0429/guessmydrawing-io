@@ -5,15 +5,15 @@ body {
 	font-size: 14px;
 	color: #3C3D3F;
     text-align: center;
-    width: 800px;
+    width: 1600px;
     margin:auto;
 }
 
 .grid-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 2fr 2fr 2fr;
   grid-template-rows: auto auto auto auto;
-  grid-template-areas: "word word word word" "time canvas canvas chat" "time canvas canvas chat" "guess guess guess guess" "turnOrder turnOrder turnOrder turnOrder";
+  grid-template-areas: "word word word word" "time drawing drawing chat" "time drawing drawing chat" "guess guess guess guess" "turnOrder turnOrder turnOrder turnOrder";
   gap: 10px;
 }
 
@@ -27,7 +27,7 @@ body {
     border: solid black;
 }
 
-.canvas {grid-area: canvas;
+.drawing {grid-area: drawing;
     border: solid black;
 }
 

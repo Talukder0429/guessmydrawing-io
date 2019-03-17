@@ -56,7 +56,9 @@
         clearCanvas();
         context.lineJoin = "round";
         for (let i = 0; i < clickX.length; i++) {
-            if (clickDrag[i]) {
+            if (clickX[i] == -1)
+                clearCanvas();
+            else if (clickDrag[i]) {
                 context.beginPath();
                 context.moveTo(clickX[i - 1], clickY[i - 1]);
                 context.lineTo(clickX[i], clickY[i]);
@@ -69,11 +71,13 @@
     };
 
     let resetCanvas = function(){
-        clickX = [];
-        clickY = [];
-        clickDrag = [];
-        clickColor = [];
-        clickSize = [];
+        if (clickX[clickX.length - 1] == -1)
+            return;
+        clickX.push(-1);
+        clickY.push(null);
+        clickDrag.push(null);
+        clickColor.push(null);
+        clickSize.push(null);
         clearCanvas();
     };
 
@@ -102,10 +106,33 @@
         currentSize = 10;
     }
 
+    // function idea from
+    // https://stackoverflow.com/questions/79816/need-javascript-code-for-button-press-and-hold
+    function heldDown(btn, action, start) {
+        var t;
+    
+        var repeat = function () {
+            action();
+            t = setTimeout(repeat, start);
+            if (start > 32)
+                start = start / 2;
+        }
+    
+        btn.onmousedown = function() {
+            repeat();
+        }
+    
+        btn.onmouseup = function () {
+            clearTimeout(t);
+        }
+
+        btn.onmouseleave = btn.onmouseup;
+    };
+
     window.addEventListener('load', function(){
         prepareCanvas();
         document.querySelector("#drawing > #clear").onclick = resetCanvas;
-        document.querySelector("#drawing > #undo").onclick = undoLast;
+        heldDown(document.querySelector("#drawing > #undo"), undoLast, 1000);
         document.querySelector("#drawing > #canvasColor").oninput = changeColor;
         document.querySelector("#drawing > #size > #small").onclick = setSizeSmall;
         document.querySelector("#drawing > #size > #regular").onclick = setSizeRegular;

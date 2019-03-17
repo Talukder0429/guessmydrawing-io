@@ -106,9 +106,9 @@
         currentSize = 10;
     }
 
-    // function idea from
+    // function base code from
     // https://stackoverflow.com/questions/79816/need-javascript-code-for-button-press-and-hold
-    function heldDown(btn, action, start) {
+    function heldDown(btn, action, initial, start=initial) {
         var t;
     
         var repeat = function () {
@@ -124,6 +124,7 @@
     
         btn.onmouseup = function () {
             clearTimeout(t);
+            start = initial;
         }
 
         btn.onmouseleave = btn.onmouseup;
@@ -132,7 +133,7 @@
     window.addEventListener('load', function(){
         prepareCanvas();
         document.querySelector("#drawing > #clear").onclick = resetCanvas;
-        heldDown(document.querySelector("#drawing > #undo"), undoLast, 1000);
+        heldDown(document.querySelector("#drawing > #undo"), undoLast, 250);
         document.querySelector("#drawing > #canvasColor").oninput = changeColor;
         document.querySelector("#drawing > #size > #small").onclick = setSizeSmall;
         document.querySelector("#drawing > #size > #regular").onclick = setSizeRegular;

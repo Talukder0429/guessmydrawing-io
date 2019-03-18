@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */ 
+
 // Dependencies
 const express = require('express');
 const http = require('http');
@@ -32,7 +34,6 @@ io.on('connection', function(socket) {
     socket.on('newPlayer', function() {
         console.log("A player on socket " + socket.id + " connected!");
         players.push(socket.id);
-        io.sockets.emit('addPlayerCard');
         if (players.length == 1){
           drawingPlayer = socket.id;
           io.to(players[0]).emit('letsDraw');
@@ -53,12 +54,13 @@ io.on('connection', function(socket) {
       players.splice(i, 1);
 
       if (socket.id == drawingPlayer) {
-        console.log("he was the leader");
+        lastDataUrl = null;
         if (players.length > 0){
           drawingPlayer = players[0];
           io.to(players[0]).emit('letsDraw');
+          io.sockets.emit('letsWatch', drawingPlayer, lastDataUrl);
         } else
           drawingPlayer = null;
       }
-    })
+    });
 });

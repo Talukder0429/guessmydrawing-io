@@ -182,3 +182,17 @@ socket.on('letsDraw', function() {
     document.querySelector("#drawingID > #size > #regular").onclick = setSizeRegular;
     document.querySelector("#drawingID > #size > #big").onclick = setSizeBig;
 });
+
+socket.on('addPlayerCard', function() {
+    "use strict";
+    console.log("adding player card!")
+    let div = document.createElement('div');
+    div.className = 'playerCard';
+    div.innerHTML = 
+    '<div class="scoreBoard">\
+        <div>USERNAME</div>\
+        <div>SCORE</div>\
+      </div>\
+    <div class="arrowRight"></div>';
+    document.getElementById('turnOrderID').appendChild(div);
+});

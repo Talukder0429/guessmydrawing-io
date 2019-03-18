@@ -7,7 +7,6 @@ socket.emit('newPlayer');
 socket.on('letsWatch', function(leaderSocket, dataURL) {
     "use strict";
     if (socket.id != leaderSocket) {
-        console.log("letsWatch");
         document.getElementById("canvasDraw").style.display = "none";
         document.getElementById("canvasView").style.display = "initial";
         let context = document.getElementById("canvasView").getContext("2d");
@@ -18,12 +17,15 @@ socket.on('letsWatch', function(leaderSocket, dataURL) {
         };
         if (dataURL)
             image.src = dataURL;
+        else {
+            let context = document.getElementById("canvasView").getContext("2d");
+            context.clearRect(0, 0, canvasDraw.width, canvasDraw.height);
+        }
     }
 });
 
 socket.on('letsDraw', function() {
     "use strict";
-    console.log("letsDraw");
     document.getElementById("canvasDraw").style.display = "initial";
     document.getElementById("canvasView").style.display = "none";
     let context = document.getElementById("canvasDraw").getContext("2d");

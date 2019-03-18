@@ -52,10 +52,11 @@ io.on('connection', function(socket) {
       players.splice(i, 1);
 
       if (socket.id == drawingPlayer) {
-        console.log("he was the leader");
+        lastDataUrl = null;
         if (players.length > 0){
           drawingPlayer = players[0];
           io.to(players[0]).emit('letsDraw');
+          io.sockets.emit('letsWatch', drawingPlayer, lastDataUrl);
         } else
           drawingPlayer = null;
       }

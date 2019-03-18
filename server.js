@@ -43,7 +43,6 @@ io.on('connection', function(socket) {
     });
 
     socket.on('view', function(leaderSocket, dataURL) {
-        //console.log(fromPlayerSocket + " is leader!");
         lastDataUrl = dataURL;
         io.sockets.emit('letsWatch', leaderSocket, dataURL);
     });

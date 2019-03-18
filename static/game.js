@@ -31,8 +31,6 @@ socket.on('letsDraw', function() {
     document.getElementById("canvasDraw").style.display = "initial";
     document.getElementById("canvasView").style.display = "none";
     let context = document.getElementById("canvasDraw").getContext("2d");
-    //let dataURL = canvasDraw.toDataURL();
-    //console.log("dataURL: " + dataURL);
 
     // canvas drawing functions base code from
     // http://www.williammalone.com/articles/create-html5-canvas-javascript-drawing-app/ and

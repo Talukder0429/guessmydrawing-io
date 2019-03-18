@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */ 
+
 let socket = io();
 socket.on('message', function(data) {
   console.log(data);
@@ -10,7 +12,7 @@ socket.on('letsWatch', function(leaderSocket, dataURL) {
         document.getElementById("canvasDraw").style.display = "none";
         document.getElementById("canvasView").style.display = "initial";
         let context = document.getElementById("canvasView").getContext("2d");
-        let image = new Image;
+        let image = new Image();
         image.onload = function() {
             context.clearRect(0, 0, canvasView.width, canvasView.height);
             context.drawImage(image, 0, 0);
@@ -134,23 +136,23 @@ socket.on('letsDraw', function() {
         clickColor.pop();
         clickSize.pop();
         redraw();
-    }
+    };
 
     let changeColor = function() {
         currentColor = this.value;
-    }
+    };
 
     let setSizeSmall = function() {
         currentSize = 2;
-    }
+    };
 
     let setSizeRegular = function() {
         currentSize = 5;
-    }
+    };
 
     let setSizeBig = function() {
         currentSize = 10;
-    }
+    };
 
     // function base code from
     // https://stackoverflow.com/questions/79816/need-javascript-code-for-button-press-and-hold
@@ -162,19 +164,19 @@ socket.on('letsDraw', function() {
             t = setTimeout(repeat, start);
             if (start > 8)
                 start = start / 2;
-        }
+        };
 
         btn.onmousedown = function() {
             repeat();
-        }
+        };
 
         btn.onmouseup = function() {
             clearTimeout(t);
             start = initial;
-        }
+        };
 
         btn.onmouseleave = btn.onmouseup;
-    };
+    }
 
     prepareCanvas();
     document.querySelector("#drawingID > #clear").onclick = resetCanvas;

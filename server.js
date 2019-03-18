@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */ 
+
 // Dependencies
 const express = require('express');
 const http = require('http');
@@ -60,5 +62,5 @@ io.on('connection', function(socket) {
         } else
           drawingPlayer = null;
       }
-    })
+    });
 });

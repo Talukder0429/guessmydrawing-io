@@ -1,5 +1,3 @@
-/*jshint esversion: 6 */ 
-
 let socket = io();
 socket.on('message', function(data) {
   console.log(data);
@@ -9,25 +7,23 @@ socket.emit('newPlayer');
 socket.on('letsWatch', function(leaderSocket, dataURL) {
     "use strict";
     if (socket.id != leaderSocket) {
+        console.log("letsWatch");
         document.getElementById("canvasDraw").style.display = "none";
         document.getElementById("canvasView").style.display = "initial";
         let context = document.getElementById("canvasView").getContext("2d");
-        let image = new Image();
+        let image = new Image;
         image.onload = function() {
             context.clearRect(0, 0, canvasView.width, canvasView.height);
             context.drawImage(image, 0, 0);
         };
         if (dataURL)
             image.src = dataURL;
-        else {
-            let context = document.getElementById("canvasView").getContext("2d");
-            context.clearRect(0, 0, canvasDraw.width, canvasDraw.height);
-        }
     }
 });
 
 socket.on('letsDraw', function() {
     "use strict";
+    console.log("letsDraw");
     document.getElementById("canvasDraw").style.display = "initial";
     document.getElementById("canvasView").style.display = "none";
     let context = document.getElementById("canvasDraw").getContext("2d");
@@ -136,23 +132,23 @@ socket.on('letsDraw', function() {
         clickColor.pop();
         clickSize.pop();
         redraw();
-    };
+    }
 
     let changeColor = function() {
         currentColor = this.value;
-    };
+    }
 
     let setSizeSmall = function() {
         currentSize = 2;
-    };
+    }
 
     let setSizeRegular = function() {
         currentSize = 5;
-    };
+    }
 
     let setSizeBig = function() {
         currentSize = 10;
-    };
+    }
 
     // function base code from
     // https://stackoverflow.com/questions/79816/need-javascript-code-for-button-press-and-hold
@@ -164,19 +160,19 @@ socket.on('letsDraw', function() {
             t = setTimeout(repeat, start);
             if (start > 8)
                 start = start / 2;
-        };
+        }
 
         btn.onmousedown = function() {
             repeat();
-        };
+        }
 
         btn.onmouseup = function() {
             clearTimeout(t);
             start = initial;
-        };
+        }
 
         btn.onmouseleave = btn.onmouseup;
-    }
+    };
 
     prepareCanvas();
     document.querySelector("#drawingID > #clear").onclick = resetCanvas;
@@ -185,4 +181,18 @@ socket.on('letsDraw', function() {
     document.querySelector("#drawingID > #size > #small").onclick = setSizeSmall;
     document.querySelector("#drawingID > #size > #regular").onclick = setSizeRegular;
     document.querySelector("#drawingID > #size > #big").onclick = setSizeBig;
+});
+
+socket.on('addPlayerCard', function() {
+    "use strict";
+    console.log("adding player card!")
+    let div = document.createElement('div');
+    div.className = 'playerCard';
+    div.innerHTML = 
+    '<div class="scoreBoard">\
+        <div>USERNAME</div>\
+        <div>SCORE</div>\
+      </div>\
+    <div class="arrowRight"></div>';
+    document.getElementById('turnOrderID').appendChild(div);
 });

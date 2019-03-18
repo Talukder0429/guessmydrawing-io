@@ -32,7 +32,6 @@ io.on('connection', function(socket) {
     socket.on('newPlayer', function() {
         console.log("A player on socket " + socket.id + " connected!");
         players.push(socket.id);
-        io.sockets.emit('addPlayerCard');
         if (players.length == 1){
           drawingPlayer = socket.id;
           io.to(players[0]).emit('letsDraw');

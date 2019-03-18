@@ -2,7 +2,7 @@
 
 ### Developers
 * Riaz Charania
-* ~~Vilen Milner~~
+* Vilen Milner
 * Arnob Talukder
 
 ## Description of Web App

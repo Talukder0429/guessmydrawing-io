@@ -10,6 +10,8 @@ const server = http.Server(app);
 const io = socketIO(server);
 app.set('port', 3000);
 app.use('/static', express.static(__dirname + '/static'));
+const ss = require('socket.io-stream');
+const mtw = require('mediastream-to-webm')
 
 // Routing
 app.get('/', function(request, response) {
@@ -30,6 +32,8 @@ let lastDataUrl = null;
 
 let drawingPlayer = null;
 
+let bufferHeader = null;
+
 io.on('connection', function(socket) {
     socket.on('newPlayer', function() {
         console.log("A player on socket " + socket.id + " connected!");
@@ -41,6 +45,29 @@ io.on('connection', function(socket) {
           io.sockets.emit('letsWatch', players[0], lastDataUrl);
         }
     });
+
+    socket.on('bufferHeader', function(packet) {
+      bufferHeader = packet;
+      io.sockets.emit('bufferHeader', packet);
+    });
+
+    socket.on('stream', function(packet) {
+      io.sockets.emit('stream', packet)
+    });
+
+    socket.on('requestBufferHeader', function() {
+      socket.emit('bufferHeader', bufferHeader);
+    });
+
+    /*ss(socket).on('voice', function(audioStream) {
+      /*players.forEach(function(playerSocket) {
+        ss(playerSocket).emit('voice', audioStream);
+      });
+      console.log(audioStream);
+      const stream = ss.createStream();
+      ss(socket).emit('voice', stream);
+      audioStream.pipe(stream);
+    });*/
 
     socket.on('view', function(leaderSocket, dataURL) {
         lastDataUrl = dataURL;

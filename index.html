@@ -10,6 +10,7 @@
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <h1 class="title">GuessMyDrawing.io</h1>
+    <audio id="audioDevice" controls autoplay></audio>
     <div class="grid-container">
         <div class="word">word</div>
         <div class="time">time</div>
@@ -34,7 +35,11 @@
             <input class="msg" type="text" maxlength="16" placeholder="What is your guess?" required>
         </div>
     </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/static/socket.io-stream.js"></script>
+    <script src="/static/mediastream-to-webm.js"></script>
+    <script type="text/javascript" src='https://unpkg.com/sfmediastream@latest/dist/SFMediaStream.min.js'></script>
     <script src="/static/game.js"></script>
 </body>
 

@@ -1,9 +1,42 @@
 /*jshint esversion: 6 */ 
 
 let socket = io();
+// const ss = require('socket.io-stream');
+
 socket.on('message', function(data) {
   console.log(data);
 });
+
+let presenterMedia = new ScarletsMediaPresenter({
+    audio:{
+        channelCount: 1,
+        echoCancellation: false
+    }
+}, 100);
+
+presenterMedia.onRecordingReady = function(packet) {
+    socket.emit('bufferHeader', packet);
+};
+
+presenterMedia.onBufferProcess = function(streamData) {
+    socket.emit('stream', streamData);
+}
+
+presenterMedia.startRecording();
+
+let audioStreamer = new ScarletsAudioStreamer(100);
+audioStreamer.playStream();
+
+socket.on('bufferHeader', function(packet){
+    audioStreamer.setBufferHeader(packet);
+});
+
+socket.on('stream', function(packet){
+    audioStreamer.receiveBuffer(packet);
+});
+
+socket.emit('requestBufferHeader', '');
+
 socket.emit('newPlayer');
 
 socket.on('letsWatch', function(leaderSocket, dataURL) {

@@ -22,19 +22,19 @@ server.listen(port, function() {
   console.log('Starting server on port ' + port);
 });
 
-// Add the WebSocket handlers
-io.on('connection', function(socket) {});
-
 let players = [];
 
 let lastDataUrl = null;
 
 let drawingPlayer = null;
 
+// Add the WebSocket handlers
 io.on('connection', function(socket) {
     socket.on('newPlayer', function() {
         console.log("A player on socket " + socket.id + " connected!");
         players.push(socket.id);
+        
+        io.sockets.emit('updateSB', players);
         if (players.length == 1){
           drawingPlayer = socket.id;
           io.to(players[0]).emit('letsDraw');
@@ -53,6 +53,7 @@ io.on('connection', function(socket) {
       let i = players.indexOf(socket.id);
       players.splice(i, 1);
 
+      io.sockets.emit('updateSB', players);
       if (socket.id == drawingPlayer) {
         lastDataUrl = null;
         if (players.length > 0){

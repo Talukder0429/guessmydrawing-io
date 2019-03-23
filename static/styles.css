@@ -50,35 +50,49 @@ body {
     grid-area: turnOrder;
     border: solid black;
     padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
 }
 
 .scoreBoard {
     display: inline-block;
-    width: 160px;
+    width: 120px;
     border-radius: 15px;
     overflow: hidden;
     background: linear-gradient(to bottom, #A1FFCE, #FAFFD1);
-    padding: 15px;
+    padding: 5px;
     vertical-align: middle;
 }
 
+.playerCard {
+    display: inline-block;
+    float: left;
+}
+
+/*https://codepen.io/saeedalipoor/pen/NPyeog*/
 .arrowRight {
     display: inline-block;
-    border: solid black;
-    border-width: 0 5px 5px 0;
-    width: 15px;
-    height: 15px;
-    transform: rotate(-45deg);
+    position: relative;
+    vertical-align: middle;
+    box-sizing: border-box;
+    transform: rotate(45deg);
+    width: 20px;
+    height: 20px;
+    border-width: 4px 4px 0 0;
+    border-style: solid;
+    margin-right: 10px;
 }
 
 .endOfRound {
     display: inline-block;
-    width: 160px;
+    width: 120px;
     border-radius: 15px;
     overflow: hidden;
     background: linear-gradient(to bottom, #A1FFCE, #FAFFD1);
-    padding: 15px;
-    vertical-align: middle
+    color: red;
+    float: left;
+    padding: 14px;
 }
 
 .drawingUtil {

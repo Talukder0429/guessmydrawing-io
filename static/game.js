@@ -1,10 +1,30 @@
 /*jshint esversion: 6 */ 
 
 let socket = io();
-socket.on('message', function(data) {
-  console.log(data);
-});
+
 socket.emit('newPlayer');
+
+socket.on('updateSB', function(players) {
+    let elem = document.getElementById('turnOrderID');
+    elem.innerHTML = '';
+    for (let player of players){
+        let div = document.createElement('div');
+        div.className = 'playerCard';
+        div.innerHTML = 
+        '<div class="scoreBoard">\
+            <div>' + player.substring(0, 8) + '</div>\
+            <div>Score: 0</div>\
+          </div>\
+        <div class="arrowRight"></div>';
+        elem.appendChild(div);
+    }
+    
+    //end card
+    let end = document.createElement('div');
+    end.className = 'endOfRound';
+    end.innerHTML = '<div>END OF ROUND!</div>';
+    elem.appendChild(end);
+});
 
 socket.on('letsWatch', function(leaderSocket, dataURL) {
     "use strict";

@@ -8,7 +8,8 @@ const socketIO = require('socket.io');
 const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
-app.set('port', 3000);
+const port = process.env.PORT || 3000;
+app.set('port', port);
 app.use('/static', express.static(__dirname + '/static'));
 
 // Routing
@@ -17,8 +18,8 @@ app.get('/', function(request, response) {
 });
 
 // Starts the server.
-server.listen(3000, function() {
-  console.log('Starting server on port 3000');
+server.listen(port, function() {
+  console.log('Starting server on port ' + port);
 });
 
 // Add the WebSocket handlers

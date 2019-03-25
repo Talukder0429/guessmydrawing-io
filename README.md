@@ -45,7 +45,7 @@ By the release of the Beta version of our web application, we plan to have the f
 
 * A canvas where users can draw pictures using various tools and coloring options.
 * A live feed of the canvas being used by the painter, so that all other players can guess the word.
-* An account management system, where users can signup/login and see their individual scores, and high-scores.
+* If players disconnect from the lobby, the game will continue as normal. If the drawer disconnects, the next person gets to draw and the canvas is reset
 
 ## Additional Features (for Final Release)
 By the final release of our web application, we plan to have the following additional  features implemented:

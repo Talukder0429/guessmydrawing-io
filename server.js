@@ -32,6 +32,8 @@ let Lobby = function () {
   this.drawingPlayer = null;
 }
 
+let playerLobbies = {};
+
 /*let players = [];
 
 let lastDataUrl = null;
@@ -50,35 +52,39 @@ io.on('connection', function(socket) {
   socket.on('newPlayer', function() {
       console.log("A player on socket " + socket.id + " connected!");
       lobbies[0].players.push(socket.id);
+      playerLobbies[socket.id] = lobbies[0];
       
       io.in(lobbies[0].lobbyId).emit('updateSB', lobbies[0].players);
       if (lobbies[0].players.length == 1){
         lobbies[0].drawingPlayer = socket.id;
         io.to(socket.id).emit('letsDraw');
       } else {
-        io.sockets.emit('letsWatch', lobbies[0].players[0], lobbies[0].lastDataUrl);
+        io.in(lobbies[0].lobbyId).emit('letsWatch', lobbies[0].players[0], lobbies[0].lastDataUrl);
       }
   });
 
   socket.on('view', function(leaderSocket, dataURL) {
-    lobbies[0].lastDataUrl = dataURL;
-    io.sockets.emit('letsWatch', leaderSocket, dataURL);
+    let currLobby = playerLobbies[socket.id];
+    currLobby.lastDataUrl = dataURL;
+    io.in(currLobby.lobbyId).emit('letsWatch', leaderSocket, dataURL);
   });
 
   socket.on('disconnect', function(){
     console.log(socket.id + " disconnected");
-    let i = lobbies[0].players.indexOf(socket.id);
-    lobbies[0].players.splice(i, 1);
+    let currLobby = playerLobbies[socket.id];
 
-    io.sockets.emit('updateSB', lobbies[0].players);
-    if (socket.id == lobbies[0].drawingPlayer) {
-      lobbies[0].lastDataUrl = null;
-      if (lobbies[0].players.length > 0){
-        lobbies[0].drawingPlayer = lobbies[0].players[0];
-        io.to(lobbies[0].players[0]).emit('letsDraw');
-        io.sockets.emit('letsWatch', lobbies[0].drawingPlayer, lobbies[0].lastDataUrl);
+    let i = currLobby.players.indexOf(socket.id);
+    currLobby.players.splice(i, 1);
+
+    io.in(currLobby.lobbyId).emit('updateSB', currLobby.players);
+    if (socket.id == currLobby.drawingPlayer) {
+      currLobby.lastDataUrl = null;
+      if (currLobby.players.length > 0){
+        currLobby.drawingPlayer = currLobby.players[0];
+        io.to(currLobby.players[0]).emit('letsDraw');
+        io.in(currLobby.lobbyId).emit('letsWatch', currLobby.drawingPlayer, currLobby.lastDataUrl);
       } else
-      lobbies[0].drawingPlayer = null;
+      currLobby.drawingPlayer = null;
     }
   });
 });

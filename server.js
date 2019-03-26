@@ -22,46 +22,63 @@ server.listen(port, function() {
   console.log('Starting server on port ' + port);
 });
 
-let players = [];
+let lobbies = [];
+
+let Lobby = function () {
+  let lobbyNum = lobbies.length;
+  this.lobbyId = "lobby" + lobbyNum.toString();
+  this.players = [];
+  this.lastDataUrl = null;
+  this.drawingPlayer = null;
+}
+
+/*let players = [];
 
 let lastDataUrl = null;
 
-let drawingPlayer = null;
+let drawingPlayer = null;*/
 
 // Add the WebSocket handlers
 io.on('connection', function(socket) {
-    socket.on('newPlayer', function() {
-        console.log("A player on socket " + socket.id + " connected!");
-        players.push(socket.id);
-        
-        io.sockets.emit('updateSB', players);
-        if (players.length == 1){
-          drawingPlayer = socket.id;
-          io.to(players[0]).emit('letsDraw');
-        } else {
-          io.sockets.emit('letsWatch', players[0], lastDataUrl);
-        }
-    });
+  if (lobbies.length == 0)
+    lobbies.push(new Lobby());
+  else if (lobbies[0].players.length == 6)
+    lobbies.splice(0, 0, new Lobby());
 
-    socket.on('view', function(leaderSocket, dataURL) {
-        lastDataUrl = dataURL;
-        io.sockets.emit('letsWatch', leaderSocket, dataURL);
-    });
+  socket.join(lobbies[0].lobbyId);
 
-    socket.on('disconnect', function(){
-      console.log(socket.id + " disconnected");
-      let i = players.indexOf(socket.id);
-      players.splice(i, 1);
-
-      io.sockets.emit('updateSB', players);
-      if (socket.id == drawingPlayer) {
-        lastDataUrl = null;
-        if (players.length > 0){
-          drawingPlayer = players[0];
-          io.to(players[0]).emit('letsDraw');
-          io.sockets.emit('letsWatch', drawingPlayer, lastDataUrl);
-        } else
-          drawingPlayer = null;
+  socket.on('newPlayer', function() {
+      console.log("A player on socket " + socket.id + " connected!");
+      lobbies[0].players.push(socket.id);
+      
+      io.in(lobbies[0].lobbyId).emit('updateSB', lobbies[0].players);
+      if (lobbies[0].players.length == 1){
+        lobbies[0].drawingPlayer = socket.id;
+        io.to(socket.id).emit('letsDraw');
+      } else {
+        io.sockets.emit('letsWatch', lobbies[0].players[0], lobbies[0].lastDataUrl);
       }
-    });
+  });
+
+  socket.on('view', function(leaderSocket, dataURL) {
+    lobbies[0].lastDataUrl = dataURL;
+    io.sockets.emit('letsWatch', leaderSocket, dataURL);
+  });
+
+  socket.on('disconnect', function(){
+    console.log(socket.id + " disconnected");
+    let i = lobbies[0].players.indexOf(socket.id);
+    lobbies[0].players.splice(i, 1);
+
+    io.sockets.emit('updateSB', lobbies[0].players);
+    if (socket.id == lobbies[0].drawingPlayer) {
+      lobbies[0].lastDataUrl = null;
+      if (lobbies[0].players.length > 0){
+        lobbies[0].drawingPlayer = lobbies[0].players[0];
+        io.to(lobbies[0].players[0]).emit('letsDraw');
+        io.sockets.emit('letsWatch', lobbies[0].drawingPlayer, lobbies[0].lastDataUrl);
+      } else
+      lobbies[0].drawingPlayer = null;
+    }
+  });
 });

@@ -1,29 +1,55 @@
-/*jshint esversion: 6 */ 
+/*jshint esversion: 6 */
 
 let socket = io();
 
-socket.emit('newPlayer');
+(function() {
+    //hiding elements
+    document.getElementById("canvasDraw").style.display = "none";
+    document.getElementById("canvasView").style.display = "none";
+    hideClass(document.getElementsByClassName("utils"));
+
+    usernameID = document.getElementById('usernameID');
+    usernameID.addEventListener('keyup', function onEvent(e) {
+        if (e.keyCode === 13) {
+            usernameID.style.display = "none";
+            showClass(document.getElementsByClassName("utils"));
+            socket.emit('newPlayer', usernameID.value);
+        }
+    });
+})();
+
+function hideClass(cls) {
+    for (let elem of cls) {
+        elem.style.display = "none";
+    }
+}
+
+function showClass(cls) {
+    for (let elem of cls) {
+        elem.style.display = "initial";
+    }
+}
 
 socket.on('updateSB', function(players) {
-    let elem = document.getElementById('turnOrderID');
-    elem.innerHTML = '';
-    for (let player of players){
+    let turns = document.getElementById('turnsID');
+    turns.innerHTML = '';
+    for (let player of players) {
         let div = document.createElement('div');
         div.className = 'playerCard';
-        div.innerHTML = 
-        '<div class="scoreBoard">\
-            <div>' + player.substring(0, 8) + '</div>\
+        div.innerHTML =
+            '<div class="scoreBoard">\
+            <div>' + player.username + '</div>\
             <div>Score: 0</div>\
           </div>\
         <div class="arrowRight"></div>';
-        elem.appendChild(div);
+        turns.appendChild(div);
     }
-    
+
     //end card
     let end = document.createElement('div');
     end.className = 'endOfRound';
     end.innerHTML = '<div>END OF ROUND!</div>';
-    elem.appendChild(end);
+    turns.appendChild(end);
 });
 
 socket.on('letsWatch', function(leaderSocket, dataURL) {
@@ -31,6 +57,7 @@ socket.on('letsWatch', function(leaderSocket, dataURL) {
     if (socket.id != leaderSocket) {
         document.getElementById("canvasDraw").style.display = "none";
         document.getElementById("canvasView").style.display = "initial";
+        hideClass(document.getElementsByClassName("utils"));
         let context = document.getElementById("canvasView").getContext("2d");
         let image = new Image();
         image.onload = function() {
@@ -50,6 +77,7 @@ socket.on('letsDraw', function() {
     "use strict";
     document.getElementById("canvasDraw").style.display = "initial";
     document.getElementById("canvasView").style.display = "none";
+    showClass(document.getElementsByClassName("utils"));
     let context = document.getElementById("canvasDraw").getContext("2d");
 
     // canvas drawing functions base code from
@@ -62,8 +90,8 @@ socket.on('letsDraw', function() {
     let clickSize = [];
     let paint = false;
     let currentColor = "#000000";
-    let currentSize = 5;
-    
+    let currentSize = 4;
+
     let prepareCanvas = function() {
         canvasDraw.onmousedown = function(e) {
             let rect = canvasDraw.getBoundingClientRect();
@@ -121,10 +149,10 @@ socket.on('letsDraw', function() {
                 clearCanvas();
             else {
                 context.beginPath();
-                if (clickDrag[i] && i) 
+                if (clickDrag[i] && i)
                     context.moveTo(clickX[i - 1], clickY[i - 1]);
-                else 
-                    context.moveTo(clickX[i]-1, clickY[i]);
+                else
+                    context.moveTo(clickX[i] - 1, clickY[i]);
                 context.lineTo(clickX[i], clickY[i]);
                 context.closePath();
                 context.strokeStyle = clickColor[i];
@@ -165,11 +193,11 @@ socket.on('letsDraw', function() {
     };
 
     let setSizeRegular = function() {
-        currentSize = 5;
+        currentSize = 4;
     };
 
     let setSizeBig = function() {
-        currentSize = 10;
+        currentSize = 8;
     };
 
     // function base code from
@@ -197,10 +225,10 @@ socket.on('letsDraw', function() {
     }
 
     prepareCanvas();
-    document.querySelector("#drawingID > #clear").onclick = resetCanvas;
-    heldDown(document.querySelector("#drawingID > #undo"), undoLast, 250);
-    document.querySelector("#drawingID > #canvasColor").oninput = changeColor;
-    document.querySelector("#drawingID > #size > #small").onclick = setSizeSmall;
-    document.querySelector("#drawingID > #size > #regular").onclick = setSizeRegular;
-    document.querySelector("#drawingID > #size > #big").onclick = setSizeBig;
+    document.getElementById("clearID").onclick = resetCanvas;
+    heldDown(document.getElementById("undoID"), undoLast, 250);
+    document.getElementById("colorID").oninput = changeColor;
+    document.getElementById("smallID").onclick = setSizeSmall;
+    document.getElementById("mediumID").onclick = setSizeRegular;
+    document.getElementById("largeID").onclick = setSizeBig;
 });

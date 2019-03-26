@@ -4,34 +4,45 @@
 <head>
     <meta charset="utf-8" />
     <title>GMD</title>
-    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <h1 class="title">GuessMyDrawing.io</h1>
-    <div class="grid-container">
-        <div class="word">word</div>
-        <div class="time">time</div>
-        <div class="drawing" id=drawingID>
-            <canvas class="canvas" id="canvasDraw"></canvas>
-            <canvas class="canvas" id="canvasView"></canvas>
-            <br>
-            <button class="drawingUtil" id="undo">Undo</button>
-            <button class="drawingUtil" id="clear">Clear</button>
-            <br>
-            <input class="drawingUtil" type="color" id="canvasColor">
-            <br>
-            <div id="size">
-                <button class="drawingUtil" id="small">Small</button>
-                <button class="drawingUtil" id="regular">Regular</button>
-                <button class="drawingUtil" id="big">Big</button>
+    <h1 id="title">GuessMyDrawing.io</h1>
+    <div class="main">
+        <div class="word">
+            WORD
+        </div>
+        <div class="info">
+            INFO
+        </div>
+        <div class="drawing">
+            <canvas id="canvasDraw"></canvas>
+            <canvas id="canvasView"></canvas>
+        </div>
+        <div class="utils">
+            <div class="uc">
+                <button id="undoID">Undo</button>
+                <button id="clearID">Clear</button>
+            </div>
+            <div class="color">
+                <input type="color" id="colorID">
+            </div>
+            <div class="size">
+                <button id="smallID">Small</button>
+                <button id="mediumID">Medium</button>
+                <button id="largeID">Large</button>
             </div>
         </div>
-        <div class="chat">chat</div>
-        <div class="turnOrder" id=turnOrderID>turns</div>
-        <div class="guess">
-            <input class="msg" type="text" maxlength="140" placeholder="What is your guess?" required>
+        <div class="chat">
+            CHAT
+        </div>
+        <div class="msg">
+            <input id="msgID" type="text" maxlength="128" placeholder="What is your guess?">
+        </div>
+        <div class="turns">
+            <input id="usernameID" type="text" maxlength="8" placeholder="Please chose a username!">
         </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>

@@ -22,45 +22,67 @@ server.listen(port, function() {
     console.log('Starting server on port ' + port);
 });
 
-let players = [];
+let lobbies = [];
+
+let Lobby = function () {
+  let lobbyNum = lobbies.length;
+  this.lobbyId = "lobby" + lobbyNum.toString();
+  this.players = [];
+  this.lastDataUrl = null;
+  this.drawingPlayer = null;
+}
+
+let playerLobbies = {};
+
+/*let players = [];
 
 let lastDataUrl = null;
 
-let drawingPlayer = null;
+let drawingPlayer = null;*/
 
 // Add the WebSocket handlers
 io.on('connection', function(socket) {
-    socket.on('newPlayer', function(username) {
-        console.log("A player on socket " + socket.id + " connected, with username: " + username);
-        players.push({ id: socket.id, username: username });
-        io.sockets.emit('updateSB', players);
-        if (players.length == 1) {
-            drawingPlayer = socket.id;
-            io.to(players[0].id).emit('letsDraw');
-        } else {
-            io.sockets.emit('letsWatch', players[0].id, lastDataUrl);
-        }
-    });
+  socket.on('newPlayer', function(username) {
+    if (lobbies.length == 0)
+      lobbies.push(new Lobby());
+    else if (lobbies[0].players.length == 6)
+      lobbies.splice(0, 0, new Lobby());
+    socket.join(lobbies[0].lobbyId);
 
-    socket.on('view', function(leaderSocket, dataURL) {
-        lastDataUrl = dataURL;
-        io.sockets.emit('letsWatch', leaderSocket, dataURL);
-    });
+    console.log("A player on socket " + socket.id + " connected, with username: " + username);
+    lobbies[0].players.push({ id: socket.id, username: username });
+    playerLobbies[socket.id] = lobbies[0];
 
-    socket.on('disconnect', function() {
-        let i = players.map(function(e) { return e.id; }).indexOf(socket.id);
-        console.log("Player " + players[i].username + " disconnected");
-        players.splice(i, 1);
+    io.in(lobbies[0].lobbyId).emit('updateSB', lobbies[0].players);
+    if (lobbies[0].players.length == 1) {
+      lobbies[0].drawingPlayer = socket.id;
+      io.to(lobbies[0].players[0].id).emit('letsDraw');
+    } else {
+      io.in(lobbies[0].lobbyId).emit('letsWatch', lobbies[0].players[0].id, lobbies[0].lastDataUrl);
+    }
+  });
 
-        io.sockets.emit('updateSB', players);
-        if (socket.id == drawingPlayer) {
-            lastDataUrl = null;
-            if (players.length > 0) {
-                drawingPlayer = players[0].id;
-                io.to(players[0].id).emit('letsDraw');
-                io.sockets.emit('letsWatch', drawingPlayer, lastDataUrl);
-            } else
-                drawingPlayer = null;
-        }
-    });
+  socket.on('view', function(leaderSocket, dataURL) {
+    let currLobby = playerLobbies[socket.id];
+    currLobby.lastDataUrl = dataURL;
+    io.in(currLobby.lobbyId).emit('letsWatch', leaderSocket, dataURL);
+  });
+
+  socket.on('disconnect', function() {
+    let currLobby = playerLobbies[socket.id];
+    let i = currLobby.players.map(function(e) { return e.id; }).indexOf(socket.id);
+    console.log("Player " + currLobby.players[i].username + " disconnected");
+    currLobby.players.splice(i, 1);
+
+    io.in(currLobby.lobbyId).emit('updateSB', currLobby.players);
+    if (socket.id == currLobby.drawingPlayer) {
+      currLobby.lastDataUrl = null;
+      if (currLobby.players.length > 0) {
+        currLobby.drawingPlayer = currLobby.players[0].id;
+        io.to(currLobby.players[0].id).emit('letsDraw');
+        io.in(currLobby.lobbyId).emit('letsWatch', currLobby.drawingPlayer, currLobby.lastDataUrl);
+      } else
+        currLobby.drawingPlayer = null;
+    }
+  });
 });

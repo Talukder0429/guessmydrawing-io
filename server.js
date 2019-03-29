@@ -9,17 +9,44 @@ const app = express();
 const server = http.Server(app);
 const io = socketIO(server);
 const port = process.env.PORT || 3000;
+
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://gmd:ha38ozSpdzPZkLMY@guessmydrawing-1lm76.mongodb.net/test?retryWrites=true";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+let collection;
+
+client.connect( err => {
+  if (err) return console.error(err);
+  collection = client.db('GuessMyDrawing').collection("words");
+
+  /* collection.insertOne({_id: 0, word: "library"}, (err, res) => {
+    if (err) return console.log(err);
+  }); */
+
+  // Starts the server.
+  server.listen(port, function() {
+      console.log('Starting server on port ' + port);
+  });
+});
+
+// number of words in database
+let totalWords = 2;
+/* const client = new MongoClient(uri, { useNewUrlParser: true });
+mongo.connect(url, function(err, db) {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  console.log("Database created!");
+  db.close();
+}) */
+
 app.set('port', port);
 app.use('/static', express.static(__dirname + '/static'));
 
 // Routing
 app.get('/', function(request, response) {
     response.sendFile(path.join(__dirname + '/static', 'index.html'));
-});
-
-// Starts the server.
-server.listen(port, function() {
-    console.log('Starting server on port ' + port);
 });
 
 let lobbies = [];
@@ -30,6 +57,7 @@ let Lobby = function () {
   this.players = [];
   this.lastDataUrl = null;
   this.drawingPlayer = null;
+  this.word = null;
 }
 
 let playerLobbies = {};
@@ -43,10 +71,11 @@ let drawingPlayer = null;*/
 // Add the WebSocket handlers
 io.on('connection', function(socket) {
   socket.on('newPlayer', function(username) {
-    if (lobbies.length == 0)
+    if (lobbies.length == 0) {
       lobbies.push(new Lobby());
-    else if (lobbies[0].players.length == 6)
+    } else if (lobbies[0].players.length == 6) {
       lobbies.splice(0, 0, new Lobby());
+    }
     socket.join(lobbies[0].lobbyId);
 
     console.log("A player on socket " + socket.id + " connected, with username: " + username);
@@ -56,7 +85,13 @@ io.on('connection', function(socket) {
     io.in(lobbies[0].lobbyId).emit('updateSB', lobbies[0].players);
     if (lobbies[0].players.length == 1) {
       lobbies[0].drawingPlayer = socket.id;
-      io.to(lobbies[0].players[0].id).emit('letsDraw');
+      let rnd = Math.floor(Math.random() * totalWords);
+      collection.findOne({_id: rnd}, (err, word) => {
+        if (err) return console.error(err);
+        console.log(rnd);
+        console.log(word);
+        io.to(lobbies[0].players[0].id).emit('letsDraw', word.word);
+      });
     } else {
       io.in(lobbies[0].lobbyId).emit('letsWatch', lobbies[0].players[0].id, lobbies[0].lastDataUrl);
     }
@@ -79,7 +114,11 @@ io.on('connection', function(socket) {
       currLobby.lastDataUrl = null;
       if (currLobby.players.length > 0) {
         currLobby.drawingPlayer = currLobby.players[0].id;
-        io.to(currLobby.players[0].id).emit('letsDraw');
+        let rnd = Math.floor(Math.random() * totalWords);
+        collection.findOne({_id: rnd}, (err, word) => {
+          if (err) return console.error(err);
+          io.to(currLobby.players[0].id).emit('letsDraw', word.word);
+        });
         io.in(currLobby.lobbyId).emit('letsWatch', currLobby.drawingPlayer, currLobby.lastDataUrl);
       } else
         currLobby.drawingPlayer = null;

@@ -73,7 +73,8 @@ socket.on('letsWatch', function(leaderSocket, dataURL) {
     }
 });
 
-socket.on('letsDraw', function() {
+socket.on('letsDraw', function(word) {
+    console.log(word);
     "use strict";
     document.getElementById("canvasDraw").style.display = "initial";
     document.getElementById("canvasView").style.display = "none";

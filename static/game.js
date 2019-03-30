@@ -77,6 +77,13 @@ socket.on('timer', function(timeleft) {
     infoElem.textContent = timeleft + "\r\nSECONDS\r\nREMAINING!";
 });
 
+socket.on('waiting', function() {
+    console.log("waiting");
+    infoElem = document.getElementById('infoID');
+    infoElem.setAttribute('style', 'white-space: pre;');
+    infoElem.textContent = "WAITING FOR\r\nADDITIONAL\r\nPLAYERS...";
+});
+
 socket.on('letsWatch', function(leaderSocket, dataURL) {
     "use strict";
     if (socket.id != leaderSocket) {

@@ -33,6 +33,13 @@ body {
     grid-area: info;
     border-left: solid black;
     border-right: solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font: 400 16px 'Oleo Script', Helvetica, sans-serif;
+    color: green;
+    padding: 4px;
+    font-weight: bold;
 }
 
 .drawing {

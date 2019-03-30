@@ -70,6 +70,13 @@ socket.on('guessRes', function(res) {
     wordElem.textContent = res;
 });
 
+socket.on('timer', function(timeleft) {
+    console.log(timeleft);
+    infoElem = document.getElementById('infoID');
+    infoElem.setAttribute('style', 'white-space: pre;');
+    infoElem.textContent = timeleft + "\r\nSECONDS\r\nREMAINING!";
+});
+
 socket.on('letsWatch', function(leaderSocket, dataURL) {
     "use strict";
     if (socket.id != leaderSocket) {

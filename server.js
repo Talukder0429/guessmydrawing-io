@@ -113,7 +113,6 @@ io.on('connection', function(socket) {
 
   socket.on('guess', function(word) {
     let currLobby = playerLobbies[socket.id];
-    let res = "";
     if (socket.id != currLobby.drawingPlayer && word == currLobby.word && !currLobby.guessedPlayers.includes(socket.id)) {
       console.log("correct guess");
       io.to(socket.id).emit('guessRes', "CORRECT");
@@ -163,19 +162,22 @@ io.on('connection', function(socket) {
 function next_turn(lobby) {
   lobby.timer = setInterval(function() {
     let i = lobby.players.map(function(e) { return e.id; }).indexOf(lobby.drawingPlayer);
+    lobby.players[i].score += lobby.guessedPlayers.length * 20;
+    console.log("playerchange from " + i);
+    lobby.lastDataUrl = null;
     if (i < lobby.players.length - 1) {
-      console.log("playerchange from " + i);
-      lobby.lastDataUrl = null;
       lobby.drawingPlayer = lobby.players[i+1].id;
-      let rnd = Math.floor(Math.random() * totalWords);
-      collection.findOne({_id: rnd}, (err, res) => {
-        if (err) return console.error(err);
-        io.to(lobby.drawingPlayer).emit('letsDraw', res.word);
-        lobby.word = res.word;
-        lobby.guessedPlayers = [];
-      });
-      io.in(lobby.lobbyId).emit('letsWatch', lobby.drawingPlayer, lobby.lastDataUrl);
-      io.in(lobby.lobbyId).emit('updateSB', lobby.players, lobby.drawingPlayer);
+    } else {
+      lobby.drawingPlayer = lobby.players[0].id;
     }
+    let rnd = Math.floor(Math.random() * totalWords);
+    collection.findOne({_id: rnd}, (err, res) => {
+      if (err) return console.error(err);
+      io.to(lobby.drawingPlayer).emit('letsDraw', res.word);
+      lobby.word = res.word;
+      lobby.guessedPlayers = [];
+    });
+    io.in(lobby.lobbyId).emit('letsWatch', lobby.drawingPlayer, lobby.lastDataUrl);
+    io.in(lobby.lobbyId).emit('updateSB', lobby.players, lobby.drawingPlayer);
   }, 20000);
 }

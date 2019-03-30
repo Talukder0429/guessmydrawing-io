@@ -30,7 +30,7 @@ function showClass(cls) {
     }
 }
 
-socket.on('updateSB', function(players) {
+socket.on('updateSB', function(players, drawingPlayer) {
     let turns = document.getElementById('turnsID');
     turns.innerHTML = '';
     for (let player of players) {
@@ -94,6 +94,8 @@ socket.on('letsDraw', function(word) {
     let currentSize = 4;
 
     let prepareCanvas = function() {
+        clearCanvas();
+
         canvasDraw.onmousedown = function(e) {
             let rect = canvasDraw.getBoundingClientRect();
             let mouseX = e.pageX - this.offsetLeft;

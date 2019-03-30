@@ -120,6 +120,7 @@ io.on('connection', function(socket) {
 
   socket.on('disconnect', function() {
     let currLobby = playerLobbies[socket.id];
+    if (!currLobby) return;
     let i = currLobby.players.map(function(e) { return e.id; }).indexOf(socket.id);
     console.log("Player " + currLobby.players[i].username + " disconnected");
     currLobby.players.splice(i, 1);

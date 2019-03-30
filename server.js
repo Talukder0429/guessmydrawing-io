@@ -96,7 +96,7 @@ io.on('connection', function(socket) {
         lobbies[0].word = res.word;
         lobbies[0].guessedPlayers = [];
       });
-      io.in(lobbies[0].LobbyId).emit('waiting');
+      io.in(lobbies[0].lobbyId).emit('waiting');
     } else {
       if (lobbies[0].players.length == 2) 
         next_turn(lobbies[0]);
@@ -157,7 +157,7 @@ io.on('connection', function(socket) {
     if (currLobby.players.length < 2) {
       clearInterval(currLobby.timer);
       clearInterval(currLobby.timeLeft);
-      io.in(currLobby.LobbyId).emit('waiting');
+      io.in(currLobby.lobbyId).emit('waiting');
     }
 
     io.in(currLobby.lobbyId).emit('updateSB', currLobby.players, currLobby.drawingPlayer);

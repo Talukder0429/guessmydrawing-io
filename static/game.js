@@ -47,7 +47,7 @@ socket.on('updateSB', function(players, drawingPlayer) {
         div.innerHTML =
             '<div class="scoreBoard">\
             <div>' + player.username + '</div>\
-            <div>Score: 0</div>\
+            <div>Score: ' + player.score + '</div>\
           </div>\
         <div class="arrowRight"></div>';
         turns.appendChild(div);

@@ -61,6 +61,7 @@ let Lobby = function () {
   this.drawingPlayer = null;
   this.word = null;
   this.timer = null;
+  this.guessedPlayers = [];
 }
 
 let playerLobbies = {};
@@ -92,9 +93,11 @@ io.on('connection', function(socket) {
         if (err) return console.error(err);
         io.to(lobbies[0].drawingPlayer).emit('letsDraw', res.word);
         lobbies[0].word = res.word;
-        next_turn(lobbies[0]);
+        lobbies[0].guessedPlayers = [];
       });
     } else {
+      if (lobbies[0].players.length == 2) 
+        next_turn(lobbies[0]);
       io.in(lobbies[0].lobbyId).emit('letsWatch', lobbies[0].drawingPlayer, lobbies[0].lastDataUrl);
     }
     io.in(lobbies[0].lobbyId).emit('updateSB', lobbies[0].players, lobbies[0].drawingPlayer);
@@ -110,11 +113,12 @@ io.on('connection', function(socket) {
 
   socket.on('guess', function(word) {
     let currLobby = playerLobbies[socket.id];
-    if (socket.id != currLobby.drawingPlayer && word == currLobby.word) {
+    if (socket.id != currLobby.drawingPlayer && word == currLobby.word && !currLobby.guessedPlayers.includes(socket.id)) {
       console.log("correct guess");
       let i = currLobby.players.map(function(e) { return e.id; }).indexOf(socket.id);
       currLobby.players[i].score += (60-Math.ceil((Date.now() - startTime - currLobby.timer._idleStart)/1000));
       io.in(currLobby.lobbyId).emit('updateSB', currLobby.players, currLobby.drawingPlayer);
+      currLobby.guessedPlayers.push(socket.id);
     }
   });
 
@@ -129,19 +133,24 @@ io.on('connection', function(socket) {
       currLobby.lastDataUrl = null;
       if (currLobby.players.length > 0) {
         if (i < currLobby.players.length)
-          currLobby.drawingPlayer = currLobby.players[i].id
+          currLobby.drawingPlayer = currLobby.players[i].id;
         else
-          currLobby.drawingPlayer = currLobby.players[0].id
+          currLobby.drawingPlayer = currLobby.players[0].id;
         let rnd = Math.floor(Math.random() * totalWords);
         collection.findOne({_id: rnd}, (err, res) => {
           if (err) return console.error(err);
           io.to(currLobby.drawingPlayer).emit('letsDraw', res.word);
           currLobby.word = res.word;
+          currLobby.guessedPlayers = [];
         });
         io.in(currLobby.lobbyId).emit('letsWatch', currLobby.drawingPlayer, currLobby.lastDataUrl);
       } else
         currLobby.drawingPlayer = null;
     }
+
+    if (currLobby.players.length < 2)
+      clearInterval(currLobby.timer);
+
     io.in(currLobby.lobbyId).emit('updateSB', currLobby.players, currLobby.drawingPlayer);
   });
 });
@@ -158,8 +167,10 @@ function next_turn(lobby) {
         if (err) return console.error(err);
         io.to(lobby.drawingPlayer).emit('letsDraw', res.word);
         lobby.word = res.word;
+        lobby.guessedPlayers = [];
       });
       io.in(lobby.lobbyId).emit('letsWatch', lobby.drawingPlayer, lobby.lastDataUrl);
+      io.in(lobby.lobbyId).emit('updateSB', lobby.players, lobby.drawingPlayer);
     }
   }, 10000);
 }

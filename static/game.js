@@ -172,7 +172,7 @@ socket.on('letsDraw', function(word) {
             }
         }
         let dataURL = canvasDraw.toDataURL();
-        socket.emit('view', socket.id, dataURL);
+        socket.emit('view', dataURL);
     };
 
     let resetCanvas = function() {

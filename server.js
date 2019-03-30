@@ -76,10 +76,6 @@ io.on('connection', function(socket) {
   socket.on('newPlayer', function(username) {
     if (lobbies.length == 0) {
       lobbies.push(new Lobby());
-      next_turn(lobbies[0]);
-      setInterval(function() {
-        console.log("now: "+(60-Math.ceil(((Date.now() - startTime - lobbies[0].timer._idleStart))/1000)));
-      }, 1000);
     } else if (lobbies[0].players.length == 6) {
       lobbies.splice(0, 0, new Lobby());
     }
@@ -89,17 +85,17 @@ io.on('connection', function(socket) {
     lobbies[0].players.push({ id: socket.id, username: username, score: 0 });
     playerLobbies[socket.id] = lobbies[0];
 
-    io.in(lobbies[0].lobbyId).emit('updateSB', lobbies[0].players, currLobby.drawingPlayer);
+    io.in(lobbies[0].lobbyId).emit('updateSB', lobbies[0].players, lobbies[0].drawingPlayer);
     if (lobbies[0].players.length == 1) {
       lobbies[0].drawingPlayer = socket.id;
       let rnd = Math.floor(Math.random() * totalWords);
       collection.findOne({_id: rnd}, (err, res) => {
         if (err) return console.error(err);
         console.log(rnd);
-        console.log(word);
+        console.log(res);
         io.to(lobbies[0].players[0].id).emit('letsDraw', res.word);
         lobbies[0].word = res.word;
-        console.log("hi");
+        next_turn(lobbies[0]);
       });
     } else {
       io.in(lobbies[0].lobbyId).emit('letsWatch', lobbies[0].players[0].id, lobbies[0].lastDataUrl);
@@ -115,6 +111,7 @@ io.on('connection', function(socket) {
   socket.on('guess', function(word) {
     let currLobby = playerLobbies[socket.id];
     if (socket.id != currLobby.drawingPlayer && word == currLobby.word) {
+      console.log("correct guess");
       let i = currLobby.players.map(function(e) { return e.id; }).indexOf(socket.id);
       currLobby.players[i].score += (60-Math.ceil((Date.now() - startTime - currLobby.timer._idleStart)/1000));
     }

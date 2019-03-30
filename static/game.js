@@ -3,6 +3,14 @@
 let socket = io();
 
 (function() {
+    msgID = document.getElementById('msgID');
+    msgID.addEventListener('keyup', function onEvent(e) {
+        if (e.keyCode === 13) {
+            console.log(msgID.value);
+            socket.emit("guess", msgID.value);
+            document.getElementById('msgID').value = "";
+        }
+    });
     //hiding elements
     document.getElementById("canvasDraw").style.display = "none";
     document.getElementById("canvasView").style.display = "none";

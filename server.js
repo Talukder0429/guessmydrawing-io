@@ -110,12 +110,17 @@ io.on('connection', function(socket) {
 
   socket.on('guess', function(word) {
     let currLobby = playerLobbies[socket.id];
+    let res = "";
     if (socket.id != currLobby.drawingPlayer && word == currLobby.word) {
       console.log("correct guess");
+      res = "CORRECT!";
       let i = currLobby.players.map(function(e) { return e.id; }).indexOf(socket.id);
       currLobby.players[i].score += (60-Math.ceil((Date.now() - startTime - currLobby.timer._idleStart)/1000));
       io.in(currLobby.lobbyId).emit('updateSB', currLobby.players, currLobby.drawingPlayer);
+    } else {
+      res = "TRY AGAIN!";
     }
+    io.to(socket.id).emit('guessRes', res);
   });
 
   socket.on('disconnect', function() {
@@ -160,6 +165,7 @@ function next_turn(lobby) {
         lobby.word = res.word;
       });
       io.in(lobby.lobbyId).emit('letsWatch', lobby.drawingPlayer, lobby.lastDataUrl);
+      io.in(lobby.lobbyId).emit('updateSB', lobby.players, lobby.drawingPlayer);
     }
-  }, 10000);
+  }, 20000);
 }

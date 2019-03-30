@@ -24,6 +24,9 @@ body {
 .word {
     grid-area: word;
     border: solid black;
+    font: 400 32px 'Oleo Script', Helvetica, sans-serif;
+    color: black;
+    padding: 4px;
 }
 
 .info {
@@ -113,6 +116,10 @@ body {
 .playerCard {
     display: inline-block;
     float: left;
+}
+
+#drawingPlayerCard .scoreBoard{
+    border: solid black;
 }
 
 /*https://codepen.io/saeedalipoor/pen/NPyeog*/

@@ -7,7 +7,7 @@ let socket = io();
     msgID.addEventListener('keyup', function onEvent(e) {
         if (e.keyCode === 13) {
             console.log(msgID.value);
-            socket.emit("guess", msgID.value);
+            socket.emit("guess", msgID.value.toLowerCase());
             document.getElementById('msgID').value = "";
         }
     });
@@ -40,14 +40,19 @@ function showClass(cls) {
 
 socket.on('updateSB', function(players, drawingPlayer) {
     let turns = document.getElementById('turnsID');
+    console.log(players);
+    console.log(drawingPlayer);
     turns.innerHTML = '';
     for (let player of players) {
         let div = document.createElement('div');
         div.className = 'playerCard';
+        if (player.id == drawingPlayer){
+            div.id = 'drawingPlayerCard';
+        }
         div.innerHTML =
             '<div class="scoreBoard">\
             <div>' + player.username + '</div>\
-            <div>Score: 0</div>\
+            <div>' + player.score + '</div>\
           </div>\
         <div class="arrowRight"></div>';
         turns.appendChild(div);
@@ -60,12 +65,21 @@ socket.on('updateSB', function(players, drawingPlayer) {
     turns.appendChild(end);
 });
 
+socket.on('guessRes', function(res) {
+    let wordElem = document.getElementById('wordID');
+    wordElem.textContent = res;
+});
+
 socket.on('letsWatch', function(leaderSocket, dataURL) {
     "use strict";
     if (socket.id != leaderSocket) {
         document.getElementById("canvasDraw").style.display = "none";
         document.getElementById("canvasView").style.display = "initial";
         hideClass(document.getElementsByClassName("utils"));
+
+        let wordElem = document.getElementById('wordID');
+        wordElem.textContent = "";
+
         let context = document.getElementById("canvasView").getContext("2d");
         let image = new Image();
         image.onload = function() {
@@ -87,6 +101,10 @@ socket.on('letsDraw', function(word) {
     document.getElementById("canvasDraw").style.display = "initial";
     document.getElementById("canvasView").style.display = "none";
     showClass(document.getElementsByClassName("utils"));
+
+    let wordElem = document.getElementById('wordID');
+    wordElem.textContent = "It's your turn to draw: " + word.toUpperCase();
+
     let context = document.getElementById("canvasDraw").getContext("2d");
 
     // canvas drawing functions base code from

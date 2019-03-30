@@ -180,4 +180,9 @@ function next_turn(lobby) {
     io.in(lobby.lobbyId).emit('letsWatch', lobby.drawingPlayer, lobby.lastDataUrl);
     io.in(lobby.lobbyId).emit('updateSB', lobby.players, lobby.drawingPlayer);
   }, 20000);
+
+  setInterval(function() {
+    let timeleft = (20-Math.ceil((Date.now() - startTime - lobby.timer._idleStart)/1000));
+    io.in(lobby.lobbyId).emit('timer', timeleft.toString());
+  }, 1000);
 }

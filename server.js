@@ -61,6 +61,7 @@ let Lobby = function () {
   this.drawingPlayer = null;
   this.word = null;
   this.timer = null;
+  this.timeLeft = null;
   this.guessedPlayers = [];
 }
 
@@ -95,6 +96,7 @@ io.on('connection', function(socket) {
         lobbies[0].word = res.word;
         lobbies[0].guessedPlayers = [];
       });
+      io.in(lobbies[0].LobbyId).emit('waiting');
     } else {
       if (lobbies[0].players.length == 2) 
         next_turn(lobbies[0]);
@@ -152,8 +154,11 @@ io.on('connection', function(socket) {
         currLobby.drawingPlayer = null;
     }
 
-    if (currLobby.players.length < 2)
+    if (currLobby.players.length < 2) {
       clearInterval(currLobby.timer);
+      clearInterval(currLobby.timeLeft);
+      io.in(currLobby.LobbyId).emit('waiting');
+    }
 
     io.in(currLobby.lobbyId).emit('updateSB', currLobby.players, currLobby.drawingPlayer);
   });
@@ -181,7 +186,7 @@ function next_turn(lobby) {
     io.in(lobby.lobbyId).emit('updateSB', lobby.players, lobby.drawingPlayer);
   }, 20000);
 
-  setInterval(function() {
+  lobby.timeLeft = setInterval(function() {
     let timeleft = (20-Math.ceil((Date.now() - startTime - lobby.timer._idleStart)/1000));
     io.in(lobby.lobbyId).emit('timer', timeleft.toString());
   }, 1000);

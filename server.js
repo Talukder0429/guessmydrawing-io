@@ -13,7 +13,7 @@ const io = socketIO(server);
 const port = process.env.PORT || 3000;
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.MONGODB_URI || "mongodb://gmdUser:gmdPass1@ds049548.mlab.com:49548/heroku_nft10gvf";
+const uri = "mongodb://heroku_nft10gvf:822nen9r3b8inasjmj2bg8ks0h@ds049548.mlab.com:49548/heroku_nft10gvf";
 const client = new MongoClient(uri, { useNewUrlParser: true });
 let collection;
 

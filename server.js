@@ -160,6 +160,9 @@ io.on('connection', function(socket) {
           io.in(currLobby.lobbyId).emit('timer', "60");
         } else {
           io.in(currLobby.lobbyId).emit('waiting');
+          let j = lobbies.map(function(e) { return e.lobbyId; }).indexOf(currLobby.lobbyId);
+          lobbies.splice(j, i);
+          lobbies.splice(0, 0, currLobby);
         }
       } else {
         lobbies = lobbies.filter(function(lobby) {

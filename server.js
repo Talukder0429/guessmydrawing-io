@@ -121,6 +121,8 @@ io.on('connection', function(socket) {
       io.to(socket.id).emit('guessRes', "CORRECT!");
       let i = currLobby.players.map(function(e) { return e.id; }).indexOf(socket.id);
       currLobby.players[i].score += (60-Math.ceil((Date.now() - startTime - currLobby.timer._idleStart)/1000));
+      let j = currLobby.players.map(function(e) { return e.id; }).indexOf(currLobby.drawingPlayer);
+      currLobby.players[j].score += 20;
       io.in(currLobby.lobbyId).emit('updateSB', currLobby.players, currLobby.drawingPlayer);
       currLobby.guessedPlayers.push(socket.id);
     } else if (socket.id != currLobby.drawingPlayer && word != currLobby.word && !currLobby.guessedPlayers.includes(socket.id)) {
@@ -168,7 +170,6 @@ io.on('connection', function(socket) {
 function next_turn(lobby) {
   lobby.timer = setInterval(function() {
     let i = lobby.players.map(function(e) { return e.id; }).indexOf(lobby.drawingPlayer);
-    lobby.players[i].score += lobby.guessedPlayers.length * 20;
     lobby.lastDataUrl = null;
     if (i < lobby.players.length - 1) {
       lobby.drawingPlayer = lobby.players[i+1].id;

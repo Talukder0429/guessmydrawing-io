@@ -11,7 +11,6 @@ let nextTurn = new Audio('static/sfx/nextTurn.mp3');
     msgID = document.getElementById('msgID');
     msgID.addEventListener('keyup', function onEvent(e) {
         if (e.keyCode === 13) {
-            console.log(msgID.value);
             socket.emit("guess", msgID.value.toLowerCase());
             document.getElementById('msgID').value = "";
         }
@@ -57,8 +56,6 @@ socket.on('nextTurn', function() {
 
 socket.on('updateSB', function(players, drawingPlayer) {
     let turns = document.getElementById('turnsID');
-    console.log(players);
-    console.log(drawingPlayer);
     turns.innerHTML = '';
     for (let player of players) {
         let div = document.createElement('div');
@@ -90,7 +87,6 @@ socket.on('guessRes', function(res) {
 });
 
 socket.on('timer', function(timeleft) {
-    console.log(timeleft);
     infoElem = document.getElementById('infoID');
     infoElem.setAttribute('style', 'white-space: pre;');
     infoElem.textContent = timeleft + "\r\nSECONDS\r\nREMAINING!";
@@ -100,7 +96,6 @@ socket.on('timer', function(timeleft) {
 });
 
 socket.on('waiting', function() {
-    console.log("waiting");
     infoElem = document.getElementById('infoID');
     infoElem.setAttribute('style', 'white-space: pre;');
     infoElem.textContent = "WAITING FOR\r\nADDITIONAL\r\nPLAYERS...";
@@ -132,7 +127,6 @@ socket.on('letsWatch', function(leaderSocket, dataURL) {
 });
 
 socket.on('letsDraw', function(word) {
-    console.log(word);
     "use strict";
     document.getElementById("canvasDraw").style.display = "initial";
     document.getElementById("canvasView").style.display = "none";

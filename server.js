@@ -118,7 +118,6 @@ io.on('connection', function(socket) {
   socket.on('guess', function(word) {
     let currLobby = playerLobbies[socket.id];
     if (socket.id != currLobby.drawingPlayer && word == currLobby.word && !currLobby.guessedPlayers.includes(socket.id)) {
-      console.log("correct guess");
       io.to(socket.id).emit('guessRes', "CORRECT!");
       let i = currLobby.players.map(function(e) { return e.id; }).indexOf(socket.id);
       currLobby.players[i].score += (60-Math.ceil((Date.now() - startTime - currLobby.timer._idleStart)/1000));
@@ -170,7 +169,6 @@ function next_turn(lobby) {
   lobby.timer = setInterval(function() {
     let i = lobby.players.map(function(e) { return e.id; }).indexOf(lobby.drawingPlayer);
     lobby.players[i].score += lobby.guessedPlayers.length * 20;
-    console.log("playerchange from " + i);
     lobby.lastDataUrl = null;
     if (i < lobby.players.length - 1) {
       lobby.drawingPlayer = lobby.players[i+1].id;

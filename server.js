@@ -13,13 +13,13 @@ const io = socketIO(server);
 const port = process.env.PORT || 3000;
 
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb://heroku_d588kgvd:a3lm6kuqs5032n9digdmkg2ita@ds153304.mlab.com:53304/heroku_d588kgvd";
+const uri = process.env.MONGODB_URI;// || "mongodb://gmdUser:gmdPass1@ds049548.mlab.com:49548/heroku_nft10gvf";
 const client = new MongoClient(uri, { useNewUrlParser: true });
 let collection;
 
 client.connect( err => {
   if (err) return console.error(err);
-  collection = client.db('heroku_d588kgvd').collection("words");
+  collection = client.db('heroku_nft10gvf').collection("words");
 
   /* collection.insertOne({_id: 0, word: "library"}, (err, res) => {
     if (err) return console.log(err);
@@ -32,7 +32,7 @@ client.connect( err => {
 });
 
 // number of words in database
-let totalWords = 2;
+let totalWords = 10;
 /* const client = new MongoClient(uri, { useNewUrlParser: true });
 mongo.connect(url, function(err, db) {
   if (err) {

@@ -186,10 +186,10 @@ function next_turn(lobby) {
     io.in(lobby.lobbyId).emit('letsWatch', lobby.drawingPlayer, lobby.lastDataUrl);
     io.in(lobby.lobbyId).emit('updateSB', lobby.players, lobby.drawingPlayer);
     io.in(lobby.lobbyId).emit('nextTurn');
-  }, 20000);
+  }, 60000);
 
   lobby.timeLeft = setInterval(function() {
-    let timeleft = (20-Math.ceil((Date.now() - startTime - lobby.timer._idleStart)/1000));
+    let timeleft = (60-Math.ceil((Date.now() - startTime - lobby.timer._idleStart)/1000));
     io.in(lobby.lobbyId).emit('timer', timeleft.toString());
   }, 1000);
 }

@@ -1,6 +1,11 @@
 /*jshint esversion: 6 */
 
 let socket = io();
+let joinSound = new Audio('static/sfx/joinSound.mp3');
+let disconnectSound = new Audio('static/sfx/disconnectSound.mp3');
+let tick = new Audio('static/sfx/tick.mp3');
+let correct = new Audio('static/sfx/correct.mp3');
+let nextTurn = new Audio('static/sfx/nextTurn.mp3');
 
 (function() {
     msgID = document.getElementById('msgID');
@@ -38,6 +43,18 @@ function showClass(cls) {
     }
 }
 
+socket.on('joinSound', function() {
+    joinSound.play();
+});
+
+socket.on('disconnectSound', function() {
+    disconnectSound.play();
+});
+
+socket.on('nextTurn', function() {
+    nextTurn.play();
+});
+
 socket.on('updateSB', function(players, drawingPlayer) {
     let turns = document.getElementById('turnsID');
     console.log(players);
@@ -68,6 +85,8 @@ socket.on('updateSB', function(players, drawingPlayer) {
 socket.on('guessRes', function(res) {
     let wordElem = document.getElementById('wordID');
     wordElem.textContent = res;
+    if (res == "CORRECT!")
+        correct.play();
 });
 
 socket.on('timer', function(timeleft) {
@@ -75,6 +94,9 @@ socket.on('timer', function(timeleft) {
     infoElem = document.getElementById('infoID');
     infoElem.setAttribute('style', 'white-space: pre;');
     infoElem.textContent = timeleft + "\r\nSECONDS\r\nREMAINING!";
+    if (parseInt(timeleft) <= 5){
+        tick.play();
+    }
 });
 
 socket.on('waiting', function() {

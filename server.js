@@ -85,6 +85,7 @@ io.on('connection', function(socket) {
 
     console.log("A player on socket " + socket.id + " connected, with username: " + username);
     lobbies[0].players.push({ id: socket.id, username: username, score: 0 });
+    io.in(lobbies[0].lobbyId).emit('joinSound');
     playerLobbies[socket.id] = lobbies[0];
 
     if (lobbies[0].players.length == 1) {
@@ -98,8 +99,9 @@ io.on('connection', function(socket) {
       });
       io.in(lobbies[0].lobbyId).emit('waiting');
     } else {
-      if (lobbies[0].players.length == 2) 
+      if (lobbies[0].players.length == 2){
         next_turn(lobbies[0]);
+      }
       io.in(lobbies[0].lobbyId).emit('letsWatch', lobbies[0].drawingPlayer, lobbies[0].lastDataUrl);
     }
     io.in(lobbies[0].lobbyId).emit('updateSB', lobbies[0].players, lobbies[0].drawingPlayer);
@@ -117,7 +119,7 @@ io.on('connection', function(socket) {
     let currLobby = playerLobbies[socket.id];
     if (socket.id != currLobby.drawingPlayer && word == currLobby.word && !currLobby.guessedPlayers.includes(socket.id)) {
       console.log("correct guess");
-      io.to(socket.id).emit('guessRes', "CORRECT");
+      io.to(socket.id).emit('guessRes', "CORRECT!");
       let i = currLobby.players.map(function(e) { return e.id; }).indexOf(socket.id);
       currLobby.players[i].score += (60-Math.ceil((Date.now() - startTime - currLobby.timer._idleStart)/1000));
       io.in(currLobby.lobbyId).emit('updateSB', currLobby.players, currLobby.drawingPlayer);
@@ -125,7 +127,6 @@ io.on('connection', function(socket) {
     } else if (socket.id != currLobby.drawingPlayer && word != currLobby.word && !currLobby.guessedPlayers.includes(socket.id)) {
       io.to(socket.id).emit('guessRes', "TRY AGAIN!");
     }
-    
   });
 
   socket.on('disconnect', function() {
@@ -134,6 +135,7 @@ io.on('connection', function(socket) {
     let i = currLobby.players.map(function(e) { return e.id; }).indexOf(socket.id);
     console.log("Player " + currLobby.players[i].username + " disconnected");
     currLobby.players.splice(i, 1);
+    io.in(currLobby.lobbyId).emit('disconnectSound');
 
     if (socket.id == currLobby.drawingPlayer) {
       currLobby.lastDataUrl = null;
@@ -184,6 +186,7 @@ function next_turn(lobby) {
     });
     io.in(lobby.lobbyId).emit('letsWatch', lobby.drawingPlayer, lobby.lastDataUrl);
     io.in(lobby.lobbyId).emit('updateSB', lobby.players, lobby.drawingPlayer);
+    io.in(lobby.lobbyId).emit('nextTurn');
   }, 20000);
 
   lobby.timeLeft = setInterval(function() {

@@ -117,15 +117,15 @@ io.on('connection', function(socket) {
 
   socket.on('guess', function(word) {
     let currLobby = playerLobbies[socket.id];
-    if (socket.id != currLobby.drawingPlayer && word == currLobby.word && !currLobby.guessedPlayers.includes(socket.id)) {
+    if (currLobby && socket.id != currLobby.drawingPlayer && word == currLobby.word && !currLobby.guessedPlayers.includes(socket.id)) {
       io.to(socket.id).emit('guessRes', "CORRECT!");
       let i = currLobby.players.map(function(e) { return e.id; }).indexOf(socket.id);
-      currLobby.players[i].score += (60-Math.ceil((Date.now() - startTime - currLobby.timer._idleStart)/1000));
+      currLobby.players[i].score += (60-Math.ceil((Date.now() - startTime - currLobby.timer._idleStart)/1000))+1;
       let j = currLobby.players.map(function(e) { return e.id; }).indexOf(currLobby.drawingPlayer);
       currLobby.players[j].score += 20;
       io.in(currLobby.lobbyId).emit('updateSB', currLobby.players, currLobby.drawingPlayer);
       currLobby.guessedPlayers.push(socket.id);
-    } else if (socket.id != currLobby.drawingPlayer && word != currLobby.word && !currLobby.guessedPlayers.includes(socket.id)) {
+    } else if (currLobby && socket.id != currLobby.drawingPlayer && word != currLobby.word && !currLobby.guessedPlayers.includes(socket.id)) {
       io.to(socket.id).emit('guessRes', "TRY AGAIN!");
     }
   });
@@ -160,6 +160,9 @@ io.on('connection', function(socket) {
           io.in(currLobby.lobbyId).emit('timer', "60");
         } else {
           io.in(currLobby.lobbyId).emit('waiting');
+          let j = lobbies.map(function(e) { return e.lobbyId; }).indexOf(currLobby.lobbyId);
+          lobbies.splice(j, i);
+          lobbies.splice(0, 0, currLobby);
         }
       } else {
         lobbies = lobbies.filter(function(lobby) {

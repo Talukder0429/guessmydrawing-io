@@ -19,6 +19,12 @@ let nextTurn = new Audio('static/sfx/nextTurn.mp3');
     document.getElementById("canvasDraw").style.display = "none";
     document.getElementById("canvasView").style.display = "none";
     hideClass(document.getElementsByClassName("utils"));
+    hideClass(document.getElementsByClassName("msg"));
+
+    hideClass(document.getElementsByClassName("word"));
+    hideClass(document.getElementsByClassName("info"));
+    hideClass(document.getElementsByClassName("drawing"));
+
 
     usernameID = document.getElementById('usernameID');
     usernameID.addEventListener('keyup', function onEvent(e) {
@@ -26,6 +32,9 @@ let nextTurn = new Audio('static/sfx/nextTurn.mp3');
             usernameID.style.display = "none";
             showClass(document.getElementsByClassName("utils"));
             socket.emit('newPlayer', usernameID.value);
+            showClass(document.getElementsByClassName("word"));
+            showClass(document.getElementsByClassName("info"));
+            showClass(document.getElementsByClassName("drawing"));
         }
     });
 })();
@@ -107,9 +116,12 @@ socket.on('letsWatch', function(leaderSocket, dataURL) {
         document.getElementById("canvasDraw").style.display = "none";
         document.getElementById("canvasView").style.display = "initial";
         hideClass(document.getElementsByClassName("utils"));
+        showClass(document.getElementsByClassName("msg"));
 
         let wordElem = document.getElementById('wordID');
-        wordElem.textContent = "";
+        wordElem.textContent = "Make a guess...";
+
+        document.getElementById("infoID").style.height = document.getElementById("canvasView").style.width;
 
         let context = document.getElementById("canvasView").getContext("2d");
         let image = new Image();
@@ -131,6 +143,7 @@ socket.on('letsDraw', function(word) {
     document.getElementById("canvasDraw").style.display = "initial";
     document.getElementById("canvasView").style.display = "none";
     showClass(document.getElementsByClassName("utils"));
+    hideClass(document.getElementsByClassName("msg"));
 
     let wordElem = document.getElementById('wordID');
     wordElem.textContent = "It's your turn to draw: " + word.toUpperCase();

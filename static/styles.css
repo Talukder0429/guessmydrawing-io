@@ -16,14 +16,17 @@ body {
 
 .main {
     display: grid;
-    grid-template-columns: 1fr 2fr 2fr 2fr;
+    grid-template-columns: 1fr 2fr 2fr;
     grid-template-rows: auto 4fr 1fr auto auto;
-    grid-template-areas: "word word word word""info drawing drawing chat""info utils utils chat""msg msg msg msg""turns turns turns turns";
+    grid-template-areas: "word word word""info drawing drawing""utils drawing drawing""msg msg msg""turns turns turns";
+    border-left: solid black;
 }
 
 .word {
     grid-area: word;
-    border: solid black;
+    border-top: solid black;
+    border-right: solid black;
+    border-bottom: solid black;
     font: 400 32px 'Oleo Script', Helvetica, sans-serif;
     color: black;
     padding: 4px;
@@ -31,8 +34,6 @@ body {
 
 .info {
     grid-area: info;
-    border-left: solid black;
-    border-right: solid black;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -44,6 +45,8 @@ body {
 
 .drawing {
     grid-area: drawing;
+    border-left: solid black;
+    border-right: solid black;
 }
 
 .canvas{
@@ -51,16 +54,11 @@ body {
     height: 100%;
 }
 
-.chat {
-    grid-area: chat;
-    border-left: solid black;
-    border-right: solid black;
-}
-
 .msg {
     grid-area: msg;
-    border: solid black;
+    border-top: solid black;
     padding: 4px;
+    border-right: solid black;
 }
 
 #msgID {
@@ -72,13 +70,13 @@ body {
 
 .turns {
     grid-area: turns;
-    border-left: solid black;
-    border-bottom: solid black;
-    border-right: solid black;
-    padding: 4px;
+    padding: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-top: solid black;
+    border-right: solid black;
+    border-bottom: solid black;
 }
 
 .utils {

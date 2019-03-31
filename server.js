@@ -20,6 +20,7 @@ let collection;
 client.connect( err => {
   if (err) return console.error(err);
   collection = client.db('heroku_d588kgvd').collection("words");
+  console.log(collection);
 
   /* collection.insertOne({_id: 0, word: "library"}, (err, res) => {
     if (err) return console.log(err);

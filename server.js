@@ -19,7 +19,7 @@ let collection;
 
 client.connect( err => {
   if (err) return console.error(err);
-  collection = client.db('GuessMyDrawing').collection("words");
+  collection = client.db('heroku_d588kgvd').collection("words");
 
   /* collection.insertOne({_id: 0, word: "library"}, (err, res) => {
     if (err) return console.log(err);

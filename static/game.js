@@ -13,11 +13,19 @@
     //https://www.youtube.com/watch?v=4k8XfsqkU3o
     let nextTurn = new Audio('static/sfx/nextTurn.mp3');
 
-    msgID = document.getElementById('msgID');
+    let alphanumeric = /^[0-9a-zA-Z]+$/;
+
+    let msgID = document.getElementById('msgID');
     msgID.addEventListener('keyup', function onEvent(e) {
         if (e.keyCode === 13) {
-            socket.emit("guess", msgID.value.toLowerCase());
-            document.getElementById('msgID').value = "";
+            if (msgID.value.match(alphanumeric)) {
+                msgID.placeholder = "What is your guess?";
+                socket.emit("guess", msgID.value.toLowerCase());
+                msgID.value = "";
+            } else {
+                msgID.placeholder = "invalid input";
+                msgID.value = "";
+            }
         }
     });
     //hiding elements
@@ -31,15 +39,20 @@
     hideClass(document.getElementsByClassName("drawing"));
 
 
-    usernameID = document.getElementById('usernameID');
+    let usernameID = document.getElementById('usernameID');
     usernameID.addEventListener('keyup', function onEvent(e) {
         if (e.keyCode === 13) {
-            usernameID.style.display = "none";
-            showClass(document.getElementsByClassName("utils"));
-            socket.emit('newPlayer', usernameID.value);
-            showClass(document.getElementsByClassName("word"));
-            showClass(document.getElementsByClassName("info"));
-            showClass(document.getElementsByClassName("drawing"));
+            if (usernameID.value.match(alphanumeric)) {
+                usernameID.style.display = "none";
+                showClass(document.getElementsByClassName("utils"));
+                socket.emit('newPlayer', usernameID.value);
+                showClass(document.getElementsByClassName("word"));
+                showClass(document.getElementsByClassName("info"));
+                showClass(document.getElementsByClassName("drawing"));
+            } else {
+                usernameID.placeholder = "invalid input";
+                usernameID.value = "";
+            }
         }
     });
 

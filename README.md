@@ -1,5 +1,8 @@
 # Guess-My-Drawing.io
 
+### Update: Deployment
+Deployed at https://guessmydrawingio.herokuapp.com/
+
 ### Developers
 * Riaz Charania
 * ~~Vilen Milner~~

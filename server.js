@@ -84,6 +84,7 @@ io.on('connection', function(socket) {
                 next_turn(lobbies[0]);
             }
             io.in(lobbies[0].lobbyId).emit('letsWatch', lobbies[0].drawingPlayer, lobbies[0].lastDataUrl);
+            io.to(socket.id).emit('makeaguess', lobbies[0].drawingPlayer);
         }
         io.in(lobbies[0].lobbyId).emit('updateSB', lobbies[0].players, lobbies[0].drawingPlayer);
     });
@@ -137,6 +138,7 @@ io.on('connection', function(socket) {
                 });
                 if (currLobby.players.length > 1) {
                     io.in(currLobby.lobbyId).emit('letsWatch', currLobby.drawingPlayer, currLobby.lastDataUrl);
+                    io.in(currLobby.lobbyId).emit('makeaguess', currLobby.drawingPlayer);
                     next_turn(currLobby);
                     io.in(currLobby.lobbyId).emit('timer', "60");
                 } else {
@@ -179,6 +181,7 @@ function next_turn(lobby) {
             lobby.guessedPlayers = [];
         });
         io.in(lobby.lobbyId).emit('letsWatch', lobby.drawingPlayer, lobby.lastDataUrl);
+        io.in(lobby.lobbyId).emit('makeaguess', lobby.drawingPlayer);
         io.in(lobby.lobbyId).emit('updateSB', lobby.players, lobby.drawingPlayer);
         io.in(lobby.lobbyId).emit('nextTurn');
     }, 60000);

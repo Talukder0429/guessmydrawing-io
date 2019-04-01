@@ -121,9 +121,6 @@
             hideClass(document.getElementsByClassName("utils"));
             showClass(document.getElementsByClassName("msg"));
 
-            let wordElem = document.getElementById('wordID');
-            wordElem.textContent = "Make a guess...";
-
             let context = document.getElementById("canvasView").getContext("2d");
             let image = new Image();
             image.onload = function() {
@@ -136,6 +133,13 @@
                 let context = document.getElementById("canvasView").getContext("2d");
                 context.clearRect(0, 0, canvasDraw.width, canvasDraw.height);
             }
+        }
+    });
+
+    socket.on('makeaguess', function(leaderSocket) {
+        if (socket.id != leaderSocket) {
+            let wordElem = document.getElementById('wordID');
+            wordElem.textContent = "Make a guess...";
         }
     });
 

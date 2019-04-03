@@ -1,5 +1,8 @@
 # Guess-My-Drawing.io
 
+### Update: Demo
+Demoed at https://youtu.be/X4hzNpL7ZQw
+
 ### Update: Deployment
 Deployed at https://guessmydrawingio.herokuapp.com/
 

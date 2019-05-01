@@ -7,9 +7,8 @@ Demoed at https://youtu.be/X4hzNpL7ZQw
 Deployed at https://guessmydrawingio.herokuapp.com/
 
 ### Developers
-* Riaz Charania
-* ~~Vilen Milner~~
 * Arnob Talukder
+* Riaz Charania
 
 ## Description of Web App
 > The web app will be an image guessing game wherein one person at a time will be drawing an image and the other people will be able to guess what it is the person is drawing. The person drawing will have some tools to help them draw (brush thickness, color) and the people guessing will be able to see the drawings happening in real-time. Users get points for guessing correctly and quickly, and must guess before time runs out to get any points. Everybody gets a turn to draw.
